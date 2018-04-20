@@ -120,8 +120,7 @@ class DCGAN(object):
         optimizer = RMSprop(lr=0.0002, decay=6e-8)
         self.DM = Sequential()
         self.DM.add(self.discriminator())
-        self.DM.compile(loss='binary_crossentropy', optimizer=optimizer,\
-            metrics=['accuracy'])
+        self.DM.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
         return self.DM
 
     def adversarial_model(self):
@@ -131,9 +130,9 @@ class DCGAN(object):
         self.AM = Sequential()
         self.AM.add(self.generator())
         self.AM.add(self.discriminator())
-        self.AM.compile(loss='binary_crossentropy', optimizer=optimizer,\
-            metrics=['accuracy'])
+        self.AM.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
         return self.AM
+
 
 class MNIST_DCGAN(object):
     def __init__(self):
@@ -141,10 +140,8 @@ class MNIST_DCGAN(object):
         self.img_cols = 28
         self.channel = 1
 
-        self.x_train = input_data.read_data_sets("mnist",\
-        	one_hot=True).train.images
-        self.x_train = self.x_train.reshape(-1, self.img_rows,\
-        	self.img_cols, 1).astype(np.float32)
+        self.x_train = input_data.read_data_sets("mnist", one_hot=True).train.images
+        self.x_train = self.x_train.reshape(-1, self.img_rows, self.img_cols, 1).astype(np.float32)
 
         self.DCGAN = DCGAN()
         self.discriminator =  self.DCGAN.discriminator_model()
@@ -201,6 +198,7 @@ class MNIST_DCGAN(object):
             plt.close('all')
         else:
             plt.show()
+
 
 if __name__ == '__main__':
     mnist_dcgan = MNIST_DCGAN()
