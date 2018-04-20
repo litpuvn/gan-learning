@@ -6,7 +6,7 @@ mypath = 'output'
 filenames = [join(mypath, f) for f in listdir(mypath) if isfile(join(mypath, f))]
 
 header = ["anger","anticipation","disgust","fear","joy","sadness","surprise","trust"]
-with open('merge_comments.csv', 'w') as outfile:
+with open('merged_comments.csv', 'w') as outfile:
     outfile.write(','.join(header) + '\n')
 
     for fname in filenames:

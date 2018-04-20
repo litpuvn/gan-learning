@@ -17,6 +17,8 @@ from keras.layers import LeakyReLU, Dropout
 from keras.layers import BatchNormalization
 from keras.optimizers import Adam, RMSprop
 
+from numpy import genfromtxt
+
 import matplotlib.pyplot as plt
 
 class ElapsedTimer(object):
@@ -135,18 +137,25 @@ class DCGAN(object):
 
 
 class MNIST_DCGAN(object):
-    def __init__(self):
+    def __init__(self, input_file=''):
         self.img_rows = 28
         self.img_cols = 28
         self.channel = 1
 
-        self.x_train = input_data.read_data_sets("mnist", one_hot=True).train.images
+        if len(input_file) > 2:
+            self.x_train = self.read_input_from_file(input_file)
+        else:
+            self.x_train = input_data.read_data_sets("mnist", one_hot=True).train.images
         self.x_train = self.x_train.reshape(-1, self.img_rows, self.img_cols, 1).astype(np.float32)
 
         self.DCGAN = DCGAN()
         self.discriminator =  self.DCGAN.discriminator_model()
         self.adversarial = self.DCGAN.adversarial_model()
         self.generator = self.DCGAN.generator()
+
+    def read_input_from_file(self, file_path):
+
+        return genfromtxt(file_path, delimiter=',', skip_header=1)
 
     def train(self, train_steps=2000, batch_size=256, save_interval=0):
         noise_input = None
@@ -202,7 +211,7 @@ class MNIST_DCGAN(object):
 
 
 if __name__ == '__main__':
-    mnist_dcgan = MNIST_DCGAN()
+    mnist_dcgan = MNIST_DCGAN('merged_comments.csv')
     timer = ElapsedTimer()
     mnist_dcgan.train(train_steps=100, batch_size=256, save_interval=20)
     timer.elapsed_time()
