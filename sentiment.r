@@ -35,7 +35,7 @@ for(f in files) {
     file_result = rbind(file_result, emotion_data)
   }
   
-  write.csv(file_result, file = "output/" + sub(".csv", ".out.csv", f),  row.names=FALSE)
+  write.csv(file_result[,1:8], file = paste("output", sub(".csv", ".out.csv", f), sep= "/"),  row.names=FALSE)
   
 }
 
