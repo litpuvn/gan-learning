@@ -85,7 +85,7 @@ class DCGAN(object):
         self.G = Sequential()
         dropout = 0.4
         depth = 64+64+64+64
-        dim = 7
+        dim = 2
         # In: 100
         # Out: dim x dim x depth
         self.G.add(Dense(dim*dim*depth, input_dim=100))
@@ -101,16 +101,18 @@ class DCGAN(object):
         self.G.add(BatchNormalization(momentum=0.9))
         self.G.add(Activation('relu'))
 
+        # Out: 4*dim x 4*dim x depth/4
         self.G.add(UpSampling2D())
         self.G.add(Conv2DTranspose(int(depth/4), 5, padding='same'))
         self.G.add(BatchNormalization(momentum=0.9))
         self.G.add(Activation('relu'))
 
+        # Out: 4*dim x 4*dim x depth/8
         self.G.add(Conv2DTranspose(int(depth/8), 5, padding='same'))
         self.G.add(BatchNormalization(momentum=0.9))
         self.G.add(Activation('relu'))
 
-        # Out: 28 x 28 x 1 grayscale image [0.0,1.0] per pix
+        # Out: 4*dim x 4*dim x 1 grayscale image [0.0,1.0] per pix
         self.G.add(Conv2DTranspose(1, 5, padding='same'))
         self.G.add(Activation('sigmoid'))
         self.G.summary()
@@ -138,8 +140,8 @@ class DCGAN(object):
 
 class MNIST_DCGAN(object):
     def __init__(self, input_file=''):
-        self.img_rows = 28
-        self.img_cols = 28
+        self.img_rows = 8
+        self.img_cols = 8
         self.channel = 1
 
         if len(input_file) > 2:
@@ -148,7 +150,8 @@ class MNIST_DCGAN(object):
             self.x_train = input_data.read_data_sets("mnist", one_hot=True).train.images
         self.x_train = self.x_train.reshape(-1, self.img_rows, self.img_cols, 1).astype(np.float32)
 
-        self.DCGAN = DCGAN()
+        # self.DCGAN = DCGAN()
+        self.DCGAN = DCGAN(img_rows=self.img_rows, img_cols=self.img_cols)
         self.discriminator =  self.DCGAN.discriminator_model()
         self.adversarial = self.DCGAN.adversarial_model()
         self.generator = self.DCGAN.generator()
